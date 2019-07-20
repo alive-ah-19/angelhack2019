@@ -1,0 +1,88 @@
+{
+    "identityPoolName": "users",
+    "allowUnauthenticatedIdentities": false,
+    "openIdLambdaRoleName": "users466fee4a_openid_lambda_role",
+    "resourceNameTruncated": "users466fee4a",
+    "userPoolName": "users",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientName": "users466fee4a_app_client",
+    "userpoolClientGenerateSecret": true,
+    "userpoolClientRefreshTokenValidity": "30",
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "mfaLambdaRole": "users466fee4a_totp_lambda_role",
+    "userpoolClientLambdaRole": "users466fee4a_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "useDefault": "manual",
+    "authSelections": "identityPoolAndUserPool",
+    "resourceName": "users",
+    "thirdPartyAuth": true,
+    "authProviders": [],
+    "usernameAttributes": [
+        "email"
+    ],
+    "triggers": "{}",
+    "hostedUI": true,
+    "hostedUIDomainName": "roadrunner",
+    "newCallbackURLs": [
+        "https://roadrunner.netlify.com/sign-in/"
+    ],
+    "newLogoutURLs": [
+        "https://roadrunner.netlify.com/sign-out/"
+    ],
+    "AllowedOAuthFlows": "code",
+    "AllowedOAuthScopes": [
+        "phone",
+        "email",
+        "openid",
+        "profile",
+        "aws.cognito.signin.user.admin"
+    ],
+    "authProvidersUserPool": [],
+    "selectedParties": "{}",
+    "hostedUIProviderMeta": "[]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://roadrunner.netlify.com/sign-in/\"],\"LogoutURLs\":[\"https://roadrunner.netlify.com/sign-out/\"]}",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "dependsOn": []
+}
