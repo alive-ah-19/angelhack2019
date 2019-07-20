@@ -4,8 +4,13 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.2.1",
+    "aws-amplify": "^1.1.32",
+    "aws-amplify-react": "^2.3.11",
+    "mapbox-gl": "^1.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-mapbox-gl": "^4.5.1",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1"
   },
   "scripts": {
