@@ -95,7 +95,7 @@ export default function Control(props) {
 		setValues({
 			...values,
 			startAddress: 'Av. Camino Real 111 Of. 117 San Isidro 15073',
-			numVehicles: '',
+			numVehicles: 1,
 			obstaclesCoord: '',
 			numEndAddresses: 1,
 			endAddress0: 'Calle Coronel Odriozola 237-103 San Isidro',
