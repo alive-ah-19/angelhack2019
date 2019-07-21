@@ -1,114 +1,212 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import Add from '@material-ui/icons/Add';
+import { codes } from 'iso-country-codes';
 
 const useStyles = makeStyles(theme => ({
-	paper: {
-		padding: theme.spacing(2),
-		textAlign: 'center',
-		color: theme.palette.text.secondary,
+	panelContainer: {
+		width: '100vw'
+	},
+	summary: {
+		display: 'inline-block'
+	},
+	details: {
 		display: 'block'
 	},
-	textField: {
+	groupTextField: {
+		display: 'inline-block'
+	},
+	formControl: {
+		marginBottom: theme.spacing(1),
+		minWidth: 120
+	},
+	selectCountry: {
+		width: 90
+	},
+	singleTextField: {
 		display: 'block'
 	},
-	updateBtn: {
-		marginTop: theme.spacing(3)
+	demoButtonsContainer: {
+		display: 'flex',
+		alignContent: 'flex-end'
+	},
+	demoButtons: {
+		margin: theme.spacing(1)
 	}
 }));
 
-export default function Control() {
+export default function Control(props) {
 	const classes = useStyles();
 
 	const [values, setValues] = React.useState({
-		startAddress: {
-			vehicleName: '',
-			street: '',
-			city: '',
-			state: '',
-			zipCode: '',
-			country: ''
-		},
+		panelExpanded: true,
+		startAddress: '',
 		numVehicles: '',
-		obstaclesCoord: ''
+		obstaclesCoord: '',
+		countryCodes: null,
+		numEndAddresses: 1,
+		endAddress0: '',
+		activeDemoData: null
 	});
 
-	const handleChange = (outer, inner) => event => {
-		if (outer && inner) setValues({ ...values, [outer]: { [inner]: event.target.value } });
+	React.useEffect(() => {
+		if (!values.countryCodes) setValues({ ...values, countryCodes: codes });
+	}, [values]);
+	const handleChange = key => event => {
+		// console.log(key);
+		setValues({ ...values, [key]: event.target.value });
 	};
-
+	const getEndAddresses = () => {
+		const endAddresses = [];
+		const stateKeys = Object.keys(values);
+		stateKeys.forEach(key => {
+			if (key.includes('endAddress')) endAddresses.push(values[key]);
+		});
+		return endAddresses;
+	};
+	const togglePanel = state => setValues({ ...values, panelExpanded: state });
+	const handleSubmit = async event => {
+		// submit the things to the server here
+		const { startAddress, activeDemoData } = values;
+		const endAddresses = getEndAddresses();
+		await props.getStartAddressGeoJson(startAddress);
+		await props.getEndAddressesGeoJson(endAddresses);
+		props.renderInnerMap(activeDemoData);
+		togglePanel(false);
+		event.preventDefault();
+	};
+	const addNewEndAddress = () => {
+		const key = `endAddress${values.numEndAddresses + 1}`;
+		setValues({ ...values, numEndAddresses: values.numEndAddresses + 1, [key]: '' });
+	};
+	const populateDemoOne = () => {
+		setValues({
+			...values,
+			startAddress: '',
+			numVehicles: '',
+			obstaclesCoord: '',
+			numEndAddresses: 1,
+			endAddress0: '',
+			activeDemoData: 1
+		});
+	};
+	const populateDemoTwo = () => {
+		setValues({
+			...values,
+			startAddress: '',
+			numVehicles: 5,
+			obstaclesCoord: '',
+			numEndAddresses: 5,
+			endAddress0: '',
+			endAddress1: '',
+			endAddress2: '',
+			endAddress3: '',
+			endAddress4: '',
+			activeDemoData: 2
+		});
+	};
 	return (
-		<Grid item xs={12} sm={12} md={6} lrg={6}>
-			<Paper className={classes.paper}>
-				<Typography variant="h5">Enter Fleet Start Address</Typography>
-				<form noValidate autoComplete="off">
-					<TextField
-						id="standard-name"
-						label="Street"
-						className={classes.textField}
-						value={values.startAddress.street}
-						onChange={e => handleChange('startAddress', 'street')}
-						margin="normal"
-					/>
-					<TextField
-						id="standard-name"
-						label="City"
-						className={classes.textField}
-						value={values.startAddress.city}
-						onChange={e => handleChange('startAddress', 'city')}
-						margin="normal"
-					/>
-					<TextField
-						id="standard-name"
-						label="State"
-						className={classes.textField}
-						value={values.startAddress.state}
-						onChange={e => handleChange('startAddress', 'state')}
-						margin="normal"
-					/>
-					<TextField
-						id="standard-name"
-						label="Zip Code"
-						className={classes.textField}
-						value={values.startAddress.zipCode}
-						onChange={e => handleChange('startAddress', 'zipCode')}
-						margin="normal"
-					/>
-					<TextField
-						id="standard-name"
-						label="Country"
-						className={classes.textField}
-						value={values.startAddress.country}
-						onChange={e => handleChange('startAddress', 'country')}
-						margin="normal"
-					/>
-					<TextField
-						id="standard-name"
-						label="Number of Vehicles"
-						className={classes.textField}
-						value={values.numVehicles}
-						onChange={e => handleChange('numVehicles')}
-						margin="normal"
-					/>
-					<TextField
-						id="standard-name"
-						label="Obstacles Coordinates"
-						className={classes.textField}
-						value={values.obstaclesCoord}
-						onChange={e => handleChange('obstaclesCoord')}
-						margin="normal"
-						multiline
-						rows="6"
-					/>
+		<ExpansionPanel className={classes.panelContainer} defaultExpanded expanded={values.panelExpanded}>
+			<ExpansionPanelSummary
+				expandIcon={<ExpandMoreIcon />}
+				onClick={() => togglePanel(!values.panelExpanded)}
+				aria-controls="panel1c-content"
+				id="panel1c-header">
+				<div className={classes.summary}>Viewing routes for {values.numVehicles || '0'} vehicles.</div>
+			</ExpansionPanelSummary>
+			<ExpansionPanelDetails className={classes.details}>
+				<div className={classes.demoButtonsContainer}>
+					<Button variant="contained" color="tertiary" type="submit" onClick={populateDemoOne} size="small" className={classes.demoButtons}>
+						Get Demo 1 Data
+					</Button>
+					<Button variant="contained" color="tertiary" type="submit" onClick={populateDemoTwo} size="small" className={classes.demoButtons}>
+						Get Demo 2 Data
+					</Button>
+				</div>
+
+				<form noValidate autoComplete="off" onSubmit={handleSubmit}>
+					<div>
+						<Typography variant="subtitle2" component="label" htmlFor="startAddress">
+							Start Address
+						</Typography>
+						<TextField
+							id="startAddress"
+							label="Street, City, State, Zip Code"
+							value={values.startAddress}
+							onChange={handleChange('startAddress')}
+							margin="dense"
+							fullWidth
+						/>
+					</div>
+					<div>
+						<Typography variant="subtitle2" component="label" htmlFor="numVehicles">
+							Number of Available Vehicles
+						</Typography>
+						<TextField
+							id="numVehicles"
+							className={classes.singleTextField}
+							value={values.numVehicles}
+							onChange={handleChange('numVehicles')}
+							margin="dense"
+						/>
+					</div>
+					<div>
+						<div>
+							<Typography variant="subtitle2" component="label" htmlFor="endAddress">
+								End Addresses
+							</Typography>
+							<IconButton key="addEndAddress" aria-label="Add An End Address" color="inherit" onClick={addNewEndAddress}>
+								<Add />
+							</IconButton>
+						</div>
+						{[...Array(values.numEndAddresses)].map((obj, i) => {
+							const key = `endAddress${i}`;
+							return (
+								<TextField
+									id={`endAddress-${i}`}
+									key={`endAddress-${i}`}
+									label="Street, City, State, Zip Code"
+									value={values[key]}
+									onChange={handleChange(key)}
+									margin="dense"
+									fullWidth
+								/>
+							);
+						})}
+					</div>
+					<div>
+						<Typography variant="subtitle2" component="label" htmlFor="obstaclesCoord">
+							Obstacle Coordinates
+						</Typography>
+						<TextField
+							id="obstaclesCoord"
+							className={classes.singleTextField}
+							value={values.obstaclesCoord}
+							onChange={handleChange('obstaclesCoord')}
+							margin="dense"
+							multiline
+							rows="6"
+						/>
+					</div>
 				</form>
-				<Button variant="contained" color="primary" type="submit" className={classes.updateBtn}>
+			</ExpansionPanelDetails>
+			<Divider />
+			<ExpansionPanelActions>
+				<Button size="small">Cancel</Button>
+				<Button variant="contained" color="primary" type="submit" onClick={handleSubmit} size="small">
 					Update Routes
 				</Button>
-			</Paper>
-		</Grid>
+			</ExpansionPanelActions>
+		</ExpansionPanel>
 	);
 }

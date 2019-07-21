@@ -11,9 +11,9 @@ Amplify.configure(awsconfig);
 
 function App() {
 	return (
-		<Container className="App">
+		<div>
 			<Routes />
-		</Container>
+		</div>
 	);
 }
 
