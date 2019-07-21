@@ -11,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import Add from '@material-ui/icons/Add';
+import Check from '@material-ui/icons/Check';
 import { codes } from 'iso-country-codes';
 
 const useStyles = makeStyles(theme => ({
@@ -56,7 +57,8 @@ export default function Control(props) {
 		countryCodes: null,
 		numEndAddresses: 1,
 		endAddress0: '',
-		activeDemoData: null
+		activeDemoData: null,
+		activeDemoIncidents: null
 	});
 
 	React.useEffect(() => {
@@ -77,11 +79,11 @@ export default function Control(props) {
 	const togglePanel = state => setValues({ ...values, panelExpanded: state });
 	const handleSubmit = async event => {
 		// submit the things to the server here
-		const { startAddress, activeDemoData } = values;
+		const { startAddress, activeDemoData, activeDemoIncidents } = values;
 		const endAddresses = getEndAddresses();
 		await props.getStartAddressGeoJson(startAddress);
 		await props.getEndAddressesGeoJson(endAddresses);
-		props.renderInnerMap(activeDemoData);
+		props.renderInnerMap(activeDemoData, activeDemoIncidents);
 		togglePanel(false);
 		event.preventDefault();
 	};
@@ -92,27 +94,28 @@ export default function Control(props) {
 	const populateDemoOne = () => {
 		setValues({
 			...values,
-			startAddress: '',
+			startAddress: 'Av. Camino Real 111 Of. 117 San Isidro 15073',
 			numVehicles: '',
 			obstaclesCoord: '',
 			numEndAddresses: 1,
-			endAddress0: '',
+			endAddress0: 'Calle Coronel Odriozola 237-103 San Isidro',
 			activeDemoData: 1
 		});
 	};
-	const populateDemoTwo = () => {
+	const populateDemoTwo = version => {
 		setValues({
 			...values,
-			startAddress: '',
-			numVehicles: 5,
+			startAddress: 'Av. Camino Real 111 Of. 117 San Isidro 15073',
+			numVehicles: 3,
 			obstaclesCoord: '',
 			numEndAddresses: 5,
-			endAddress0: '',
-			endAddress1: '',
-			endAddress2: '',
-			endAddress3: '',
-			endAddress4: '',
-			activeDemoData: 2
+			endAddress0: 'Calle Conde de la Monclova 101 San Isidro 15073',
+			endAddress1: 'Parque Ernesto Alayza Grundy Calle Mariscal Blas Cerdeña Cdra. 2, San Isidro 15073',
+			endAddress2: 'Calle Paul Harris 200-298 San Isidro 15076',
+			endAddress3: 'Av Malecón Cercado de Lima 15076',
+			endAddress4: 'Jirón Diego Ferre 220 Magdalena del Mar 15086',
+			activeDemoData: 2,
+			activeDemoIncidents: version === 'b' ? true : false
 		});
 	};
 	return (
@@ -129,8 +132,23 @@ export default function Control(props) {
 					<Button variant="contained" color="tertiary" type="submit" onClick={populateDemoOne} size="small" className={classes.demoButtons}>
 						Get Demo 1 Data
 					</Button>
-					<Button variant="contained" color="tertiary" type="submit" onClick={populateDemoTwo} size="small" className={classes.demoButtons}>
-						Get Demo 2 Data
+					<Button
+						variant="contained"
+						color="tertiary"
+						type="submit"
+						onClick={() => populateDemoTwo('a')}
+						size="small"
+						className={classes.demoButtons}>
+						Get Demo 2a Data
+					</Button>
+					<Button
+						variant="contained"
+						color="tertiary"
+						type="submit"
+						onClick={() => populateDemoTwo('b')}
+						size="small"
+						className={classes.demoButtons}>
+						Get Demo 2b Data
 					</Button>
 				</div>
 
@@ -186,9 +204,9 @@ export default function Control(props) {
 					</div>
 					<div>
 						<Typography variant="subtitle2" component="label" htmlFor="obstaclesCoord">
-							Obstacle Coordinates
+							<Check /> <span>Obstacles Uploaded</span>
 						</Typography>
-						<TextField
+						{/* <TextField
 							id="obstaclesCoord"
 							className={classes.singleTextField}
 							value={values.obstaclesCoord}
@@ -196,7 +214,7 @@ export default function Control(props) {
 							margin="dense"
 							multiline
 							rows="6"
-						/>
+						/> */}
 					</div>
 				</form>
 			</ExpansionPanelDetails>

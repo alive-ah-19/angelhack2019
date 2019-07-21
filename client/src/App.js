@@ -1,6 +1,4 @@
 import React from 'react';
-// import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Container from '@material-ui/core/Container';
 import { withAuthenticator } from 'aws-amplify-react';
 import Amplify from 'aws-amplify';
 // Get the aws resources configuration parameters

@@ -17,8 +17,11 @@ const circleLayout = (MapboxGL.CircleLayout = { visibility: 'visible' });
 const circlePaint = (MapboxGL.CirclePaint = {
 	'circle-color': 'black'
 });
-
 const linePaint = (MapboxGL.LinePaint = { 'line-color': ['get', 'color'] });
+const polygonPaint = (MapboxGL.PolygonPaint = {
+	'fill-color': '#000000',
+	'fill-opacity': 0.7
+});
 
 class Map extends Component {
 	state = {
@@ -45,10 +48,10 @@ class Map extends Component {
 				);
 			}
 		} catch (e) {
-			this.setState({
-				snackbarOpen: true,
-				startAddressGeoJSONError: 'Invalid start address.'
-			});
+			// this.setState({
+			// 	snackbarOpen: true,
+			// 	startAddressGeoJSONError: 'Invalid start address.'
+			// });
 		}
 	};
 	getEndAddressesGeoJson = async (...addresses) => {
@@ -78,8 +81,8 @@ class Map extends Component {
 		this.closeSnackbar();
 	};
 
-	renderInnerMap = demoNum => {
-		const rawMockData = getAliveGeoJson(demoNum);
+	renderInnerMap = (demoNum, incidents = false) => {
+		const rawMockData = getAliveGeoJson(demoNum, incidents);
 		const routesGeoJson = {
 			type: 'geojson',
 			data: rawMockData.routes
@@ -88,7 +91,11 @@ class Map extends Component {
 			type: 'geojson',
 			data: rawMockData.steps
 		};
-		this.setState({ routesGeoJson: routesGeoJson, stepsGeoJson: stepsGeoJson });
+		const incidentsGeoJson = {
+			type: 'geojson',
+			data: rawMockData.incidents
+		};
+		this.setState({ routesGeoJson: routesGeoJson, stepsGeoJson: stepsGeoJson, incidentsGeoJson: incidentsGeoJson });
 	};
 
 	render() {
@@ -133,8 +140,20 @@ class Map extends Component {
 											<Feature
 												coordinates={feature.geometry.coordinates}
 												properties={feature.properties}
-												paint={linePaint}
-												key={`feature-${feature.geometry.coordinates}`}
+												key={`line-feature-${feature.geometry.coordinates}`}
+											/>
+										);
+									})}
+								</Layer>
+							)}
+							{this.state.incidentsGeoJson && this.state.incidentsGeoJson.data && (
+								<Layer type="fill" paint={polygonPaint} geoJSONSourceOptions={this.state.incidentsGeoJson}>
+									{this.state.incidentsGeoJson.data.features.map(feature => {
+										console.log('is returning polgygon');
+										return (
+											<Feature
+												coordinates={feature.geometry.coordinates}
+												key={`polygon-feature-${feature.geometry.coordinates}`}
 											/>
 										);
 									})}
@@ -154,7 +173,7 @@ class Map extends Component {
 					ContentProps={{
 						'aria-describedby': 'message-id'
 					}}
-					message={<span id="message-id">{this.state.startAddressLatLongError}</span>}
+					message={<span id="message-id">{this.state.startAddressGeoJSONError}</span>}
 					action={[
 						<IconButton key="close" aria-label="Close" color="inherit" onClick={this.closeSnackbar}>
 							<Close />
