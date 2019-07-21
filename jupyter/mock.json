@@ -1,0 +1,65 @@
+{
+	steps: {
+		"type": "FeatureCollection",
+		"features": [{
+		      "type": "Feature",
+		      "properties": {
+		      	"type": "start",
+		      	"vehicle": 0
+		      },
+		      "geometry": {
+		        "type": "Point",
+		        "coordinates": [
+		          -76.98266029357909,
+		          -12.199771077360099
+		        ]
+		      }
+		},
+		"type": "Feature",
+		      "properties": {
+		      	"type": "job",
+		      	"vehicle": 0,
+		      	"job": 2
+		      },
+		      "geometry": {
+		        "type": "Point",
+		        "coordinates": [
+		          -76.98832511901854,
+		          -12.164030528025286
+		        ]
+		      }
+		}]
+	}
+}
+
+
+
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "distance": 6149.9,
+        "duration": 908
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -76.96862,
+            -12.166081
+          ],
+          [
+            -76.993902,
+            -12.195306
+          ],
+          [
+            -76.994237,
+            -12.195704
+          ]
+        ]
+      }
+    }
+  ]
+}
